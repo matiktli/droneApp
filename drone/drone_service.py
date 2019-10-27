@@ -84,7 +84,7 @@ class DroneService():
 		self.execute_shutdown(btns_data)
 		self.execute_land(btns_data)
 		self.execute_switchCamera(btns_data)
-
+		self.execute_faceDetectMode(btns_data)
 		time.sleep(0.1) # In purpose to d not repeat. funny but working
 
 	def execute_switchCamera(self, btns_data):
@@ -103,6 +103,10 @@ class DroneService():
 	def execute_land(self, btns_data):
 		if btns_data['circle'] == 1:
 			self.land()
+
+	def execute_faceDetectMode(self, btns_data):
+		# TODO
+		pass
 
 	def getData(self):
 		data = ''

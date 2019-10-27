@@ -20,7 +20,7 @@ def flightMode(ctrl, drone, videoSvc, log, devMode = False):
 		drone.move(move_instr)
 
 		videoData = drone.getVideoData()
-		if not devMode: videoSvc.feedVideoData(videoData)
+		videoSvc.feedVideoData(videoData)
 		
 		log.info(drone.getData())
 
@@ -34,6 +34,7 @@ if __name__ == "__main__":
 	ctrl = ControlerService()
 	drone = DroneService()
 	videoSvc = VideoService()
+	videoSvc.setup(devMode = devMode)
 	try:
 		drone.setup(devMode = devMode)
 		drone.video()
