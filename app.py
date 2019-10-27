@@ -2,6 +2,7 @@ from ps4_controler.controler_service import ControlerService
 from drone.drone_service import DroneService
 from video.video_service import VideoService
 from log_service import Log
+import sys
 
 def awaitStart(ctrl, drone):
 	till = True
@@ -25,6 +26,10 @@ def flightMode(ctrl, drone, videoSvc, log, devMode = False):
 
 if __name__ == "__main__":
 	devMode = False
+	arguments = str(sys.argv)
+	if 'dev' in arguments: 
+		print('--- DEV MODE ---')
+		devMode = True
 	log = Log()
 	ctrl = ControlerService()
 	drone = DroneService()
