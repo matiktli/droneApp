@@ -9,10 +9,12 @@ class ControlerService():
 
 	def getData(self):
 		btns, axis, smh = self.joy.listen()
-		data = self.translate(axis)
-		return data
+		axis_data = self.translate_axis(axis)
+		btns_data = self.translate_btns(btns)
+		other_data = smh
+		return axis_data, btns_data, other_data
 
-	def translate(self, axis):
+	def translate_axis(self, axis):
 		result = {}
 		result['rh'] = axis.get(3) if axis.get(3) != None else 0
 		result['lh'] = axis.get(0) if axis.get(4) != None else 0
@@ -30,3 +32,16 @@ class ControlerService():
 			res['rotate_right'] = max(data['rh'], 0)
 			return res
 		return transformFunction(result)
+
+	def translate_btns(self, btns):
+		result = {}
+		return btns
+
+if __name__ == "__main__":
+	controler = ControlerService()
+	while True:
+		axis, btns, smh = controler.getData()
+		#print(btns)
+		print(axis)
+		#print(smh)
+		os.system('clear')

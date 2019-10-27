@@ -5,7 +5,7 @@ class Log():
 
 	def info(self, infoData):
 		formated = self.formatInfoData(infoData)
-		print(formated)
+		#print('{}'.format(formated))
 
 	def formatInfoData(self, data):
 		return data
