@@ -1,8 +1,10 @@
 from ps4_controler.controler_service import ControlerService
 from drone.drone_service import DroneService
 from video.video_service import VideoService
+from video.face_detection_service import FaceDetectionService
+
 from log_service import Log
-import sys
+import sys, time
 
 def awaitStart(ctrl, drone):
 	till = True
@@ -13,14 +15,26 @@ def awaitStart(ctrl, drone):
 			till = False
 			drone.takeOff()
 
-def flightMode(ctrl, drone, videoSvc, log, devMode = False):
+def flightMode(ctrl, drone, videoSvc, face_detect_ctrl, log, devMode = False):
+	faceDetectorControllerOverride = False
 	while True:
 		move_instr, btns, _ = ctrl.getData()
+		if btns['triangle'] == 1:
+			if faceDetectorControllerOverride:
+				faceDetectorControllerOverride = False
+			else:
+				faceDetectorControllerOverride = True
+			time.sleep(0.05)
 		drone.execute(btns)
-		drone.move(move_instr)
 
-		videoData = drone.getVideoData()
-		videoSvc.feedVideoData(videoData)
+		frame = drone.getVideoData()
+		if faceDetectorControllerOverride: 
+			face_data = face_detect_ctrl.detect_face(frame, number=1)
+			move_instr = face_detect_ctrl.follow_face(move_instr, face_data)
+			frame = videoSvc.put_face_frame(frame, face_data)
+		
+		videoSvc.feedVideoData(frame)
+		drone.move(move_instr)
 		
 		log.info(drone.getData())
 
@@ -34,13 +48,12 @@ if __name__ == "__main__":
 	ctrl = ControlerService()
 	drone = DroneService()
 	videoSvc = VideoService()
+	face_detect_ctrl = FaceDetectionService()
 	videoSvc.setup(devMode = devMode)
 	try:
 		drone.setup(devMode = devMode)
-		drone.video()
 		awaitStart(ctrl, drone)
-		flightMode(ctrl, drone, videoSvc, log, devMode = devMode)
-		videoSvc
+		flightMode(ctrl, drone, videoSvc, face_detect_ctrl, log, devMode = devMode)
 	except(KeyboardInterrupt):
 		print('interrupted!')
 		drone.shutdown()

@@ -24,6 +24,7 @@ class DroneService():
 			self.drone.videoFPS(60)
 			CDC = self.drone.ConfigDataCount
 			while CDC == self.drone.ConfigDataCount: time.sleep(0.001)
+			self.drone.startVideo()
 			print("Battery: "+str(self.drone.getBattery()[0])+"% "+str(self.drone.getBattery()[1]))
 
 
@@ -47,10 +48,6 @@ class DroneService():
 		self.drone.reset()
 		while (self.drone.getBattery()[0] == -1): time.sleep(0.1)
 
-	def video(self):
-		self.drone.startVideo()
-		self.drone.showVideo()
-
 	def getVideoData(self):
 		IMC = self.drone.VideoImageCount
 		while (self.drone.VideoImageCount == IMC):
@@ -60,7 +57,6 @@ class DroneService():
 
 	def move(self, data):
 		proportionVector = self.speedVector
-		if self.devMode: print(data)
 		if data['forward'] > 0:
 			self.drone.moveForward(proportionVector * data['forward'])
 		if data['backward'] > 0:

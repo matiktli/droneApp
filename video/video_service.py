@@ -1,6 +1,5 @@
 import cv2
 import time
-from face_detection_service import FaceDetectionService
 
 
 class VideoService():
@@ -10,27 +9,22 @@ class VideoService():
 		fileName = '{}/droneFlight_{}.avi'.format(self.path, time.time())
 		self.out = cv2.VideoWriter(fileName, cv2.VideoWriter_fourcc('M','J','P','G'), 10, size)
 
-	def setup(self, faceDetectionModule = True, devMode = False):
+	def setup(self, devMode = False):
 		self.devMode = devMode
-		if faceDetectionModule:
-			self.face_detection = FaceDetectionService()
 
-	def feedVideoData(self, video_data):
-		frame = self.formatFrame(video_data)
-		if self.face_detection != None:
-			print('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
-			frame = self.face_detection.detect_face_and_put_on_frame(frame)
+	def feedVideoData(self, frame):
 		if not self.devMode: self.out.write(frame)
-		if self.devMode: cv2.imshow('XD', frame)
+		cv2.imshow('Drone view', frame)
 		cv2.waitKey(1)
-
-		return 
-	
-	def formatFrame(self, frame_data):
-		return frame_data
 
 	def endRecording(self):
 		self.out.release()
+
+	def put_face_frame(self, frame, face_data):
+		for (x, y, w, h) in face_data:
+			cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
+		return frame
+
 
 
 
