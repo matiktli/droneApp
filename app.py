@@ -12,27 +12,29 @@ def awaitStart(ctrl, drone):
 			till = False
 			drone.takeOff()
 
-def flightMode(ctrl, drone, videoSvc, log):
+def flightMode(ctrl, drone, videoSvc, log, devMode = False):
 	while True:
 		move_instr, btns, _ = ctrl.getData()
 		drone.execute(btns)
 		drone.move(move_instr)
 
 		videoData = drone.getVideoData()
-		videoSvc.feedVideoData(videoData)
+		if not devMode: videoSvc.feedVideoData(videoData)
 		
 		log.info(drone.getData())
 
 if __name__ == "__main__":
+	devMode = False
 	log = Log()
 	ctrl = ControlerService()
 	drone = DroneService()
 	videoSvc = VideoService()
 	try:
-		drone.setup()
+		drone.setup(devMode = devMode)
 		drone.video()
 		awaitStart(ctrl, drone)
-		flightMode(ctrl, drone, videoSvc, log)
+		flightMode(ctrl, drone, videoSvc, log, devMode = devMode)
+		videoSvc
 	except(KeyboardInterrupt):
 		print('interrupted!')
 		drone.shutdown()
@@ -41,3 +43,5 @@ if __name__ == "__main__":
 		print('interrupted!')
 		drone.shutdown()
 		sys.exit(0)
+	finally:
+		if not devMode: videoSvc.endRecording()

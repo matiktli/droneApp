@@ -12,6 +12,7 @@ class VideoService():
 		frame = self.formatFrame(video_data)
 		self.out.write(frame)
 		cv2.waitKey(1)
+	
 	def formatFrame(self, frame_data):
 		return frame_data
 

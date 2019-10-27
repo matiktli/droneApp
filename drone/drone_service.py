@@ -9,13 +9,14 @@ class DroneService():
 		self.inAir = False
 		self.isFrontCam = True
 
-	def setup(self, speedVector = 0.5, videoData = True):
+	def setup(self, speedVector = 0.5, videoData = True, devMode = False):
+		self.devMode = devMode
 		self.speedVector = speedVector
 		self.drone.startup()
 		self.reset()
 		self.drone.useDemoMode(True)
 		self.drone.setSpeed(self.speedVector)
-		self.drone.getNDpackage(["demo"])
+		self.drone.getNDpackage(["demo"])      # mb here ??
 		self.drone.setConfigAllID()
 		if videoData:
 			self.drone.sdVideo()
@@ -28,8 +29,9 @@ class DroneService():
 
 	def takeOff(self):
 		print('Taking off...')
-		self.drone.takeoff()
-		while self.drone.NavData["demo"][0][2]: time.sleep(0.1)
+		if not self.devMode:
+			self.drone.takeoff()
+			while self.drone.NavData["demo"][0][2]: time.sleep(0.1)
 		self.inAir = True
 
 	def land(self):
@@ -39,7 +41,6 @@ class DroneService():
 
 	def shutdown(self):
 		print('Shutting down...')
-		cv2.destroyAllWindows()
 		self.drone.shutdown()
 
 	def reset(self):
@@ -59,6 +60,7 @@ class DroneService():
 
 	def move(self, data):
 		proportionVector = self.speedVector
+		if self.devMode: print(data)
 		if data['forward'] > 0:
 			self.drone.moveForward(proportionVector * data['forward'])
 		if data['backward'] > 0:
@@ -78,16 +80,12 @@ class DroneService():
 		return data
 
 	def execute(self, btns_data):
-		if btns_data['circle'] == 1:
-			self.shutdown()
+		# This kind of nesting make it easier for me to read
+		self.execute_shutdown(btns_data)
+		self.execute_land(btns_data)
 		self.execute_switchCamera(btns_data)
 
-		time.sleep(0.1)
-
-
-	def getData(self):
-		data = self.drone.getNDpackage(["demo"])
-		return data
+		time.sleep(0.1) # In purpose to d not repeat. funny but working
 
 	def execute_switchCamera(self, btns_data):
 		if btns_data['square'] == 1:
@@ -97,3 +95,15 @@ class DroneService():
 			else:
 				self.drone.frontCam()
 				self.isFrontCam = True
+
+	def execute_shutdown(self, btns_data):
+		if btns_data['options'] == 1:
+			self.shutdown()
+
+	def execute_land(self, btns_data):
+		if btns_data['circle'] == 1:
+			self.land()
+
+	def getData(self):
+		data = ''
+		return data

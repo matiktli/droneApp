@@ -41,7 +41,5 @@ if __name__ == "__main__":
 	controler = ControlerService()
 	while True:
 		axis, btns, smh = controler.getData()
-		#print(btns)
 		print(axis)
-		#print(smh)
 		os.system('clear')
