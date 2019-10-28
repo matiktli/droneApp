@@ -20,8 +20,11 @@ class VideoService():
 	def endRecording(self):
 		self.out.release()
 
-	def put_face_frame(self, frame, face_data):
+	def put_face_on_frame(self, frame, face_data):
+		cv2.circle(frame, (640/2, 360/2), 10, (0,0,255), 2)
 		for (x, y, w, h) in face_data:
+			face_cx, face_cy = (x+x+w)/2, (y+y+h)/2
+			cv2.circle(frame, (face_cx, face_cy), 10, (0,255,0), 2)
 			cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
 		return frame
 

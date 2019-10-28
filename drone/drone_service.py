@@ -56,22 +56,24 @@ class DroneService():
 		return self.drone.VideoImage
 
 	def move(self, data):
+		if data == None:
+			return None
 		proportionVector = self.speedVector
-		if data['forward'] > 0:
+		if 'forward' in data and data['forward'] > 0:
 			self.drone.moveForward(proportionVector * data['forward'])
-		if data['backward'] > 0:
+		if 'backward' in data and data['backward'] > 0:
 			self.drone.moveBackward(proportionVector * data['backward'])
-		if data['left'] > 0:
+		if 'left' in data and data['left'] > 0:
 			self.drone.moveLeft(proportionVector * data['left'])
-		if data['right'] > 0:
+		if 'right' in data and data['right'] > 0:
 			self.drone.moveRight(proportionVector * data['right'])
-		if data['rotate_left'] > 0:
+		if 'rotate_left' in data and data['rotate_left'] > 0:
 			self.drone.turnLeft(proportionVector * data['rotate_left'])
-		if data['rotate_right'] > 0:
+		if 'rotate_right' in data and data['rotate_right'] > 0:
 			self.drone.turnRight(proportionVector * data['rotate_right'])
-		if data['up'] > 0:
+		if 'up' in data and data['up'] > 0:
 			self.drone.moveUp(proportionVector * data['up'])
-		if data['down'] > 0:
+		if 'down' in data and data['down'] > 0:
 			self.drone.moveDown(proportionVector * data['down'])
 		return data
 

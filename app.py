@@ -31,7 +31,7 @@ def flightMode(ctrl, drone, videoSvc, face_detect_ctrl, log, devMode = False):
 		if faceDetectorControllerOverride: 
 			face_data = face_detect_ctrl.detect_face(frame, number=1)
 			move_instr = face_detect_ctrl.follow_face(move_instr, face_data)
-			frame = videoSvc.put_face_frame(frame, face_data)
+			frame = videoSvc.put_face_on_frame(frame, face_data)
 		
 		videoSvc.feedVideoData(frame)
 		drone.move(move_instr)
