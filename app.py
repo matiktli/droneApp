@@ -17,7 +17,7 @@ def awaitStart(ctrl, drone):
 
 def flightMode(ctrl, drone, videoSvc, face_detect_ctrl, log, devMode = False):
 	faceDetectorControllerOverride = False
-	videoSvc.startRecording()
+	if not devMode: videoSvc.startRecording()
 
 	while True:
 		move_instr, btns, _ = ctrl.getData()
@@ -37,8 +37,8 @@ def flightMode(ctrl, drone, videoSvc, face_detect_ctrl, log, devMode = False):
 		frame = drone.getVideoData()
 		if faceDetectorControllerOverride:
 			face_data = face_detect_ctrl.detect_faces(frame, number=1)
-			move_instr, followed_face_data = face_detect_ctrl.follow_face(move_instr, face_data)
-			frame = videoSvc.put_faces_on_frame(frame, face_data, faceFollowed = followed_face_data)
+			move_instr, followed_face_data, isFine = face_detect_ctrl.follow_face(move_instr, face_data)
+			frame = videoSvc.put_faces_on_frame(frame, face_data, faceFollowed = followed_face_data, isFine = isFine)
 			drone.move(move_instr)
 
 		videoSvc.feedVideoData(frame)

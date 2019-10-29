@@ -1,9 +1,9 @@
 import cv2
 class FaceDetectionService():
 	cx, cy = 640/2, 360/2 # point that drone is aiming at
-	cw, ch = 160, 360/4 # width, height of face that skynet prefer to aim at
+	cw, ch = 100, 360/4 # width, height of face that skynet prefer to aim at
 	happyBuffer_x, happyBuffer_y, happyBuffer_z = 30, 30, 5 # buffer that skynet is fine being in
-	speedVector = 0.6
+	speedVector = 0.7
 
 	def __init__(self):
 		self.face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
@@ -66,14 +66,18 @@ class FaceDetectionService():
 
 
 			moves = move_instr
+			isFine = False
 			if face_data != None:
-				makeMoveHorizontaly(moves, face_data[4])
-				makeMoveVerticaly(moves, face_data[5])
-				#makeMoveForwardBackward(moves, face_data[2], face_data[3])
+				h_state = makeMoveHorizontaly(moves, face_data[4])
+				v_state = makeMoveVerticaly(moves, face_data[5])
+				z_state = makeMoveForwardBackward(moves, face_data[2], face_data[3])
+				isFine = h_state and v_state and z_state
+			return moves, isFine
 
 		faceData = self.getMainFaceData(faces)
-		moves = releaseTheSkynet(faceData)
-		return moves, faceData
+		moves, isFine = releaseTheSkynet(faceData)
+
+		return moves, faceData, isFine
 
 
 

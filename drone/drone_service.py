@@ -33,7 +33,7 @@ class DroneService():
 
 	def takeOff(self):
 		print('Taking off...')
-		if not self.devMode:
+		if False:
 			self.drone.takeoff()
 			while self.drone.NavData["demo"][0][2]: time.sleep(0.1)
 		self.inAir = True
