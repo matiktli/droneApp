@@ -17,25 +17,31 @@ def awaitStart(ctrl, drone):
 
 def flightMode(ctrl, drone, videoSvc, face_detect_ctrl, log, devMode = False):
 	faceDetectorControllerOverride = False
+	videoSvc.startRecording()
+
 	while True:
 		move_instr, btns, _ = ctrl.getData()
+		drone.execute(btns)
+		if not faceDetectorControllerOverride:
+			r = drone.move(move_instr)
+			#print(r)
+
 		if btns['triangle'] == 1:
 			if faceDetectorControllerOverride:
 				faceDetectorControllerOverride = False
 			else:
 				faceDetectorControllerOverride = True
+			print('sleepin')
 			time.sleep(0.05)
-		drone.execute(btns)
 
 		frame = drone.getVideoData()
-		if faceDetectorControllerOverride: 
-			face_data = face_detect_ctrl.detect_face(frame, number=1)
-			move_instr = face_detect_ctrl.follow_face(move_instr, face_data)
-			frame = videoSvc.put_face_on_frame(frame, face_data)
-		
+		if faceDetectorControllerOverride:
+			face_data = face_detect_ctrl.detect_faces(frame, number=1)
+			move_instr, followed_face_data = face_detect_ctrl.follow_face(move_instr, face_data)
+			frame = videoSvc.put_faces_on_frame(frame, face_data, faceFollowed = followed_face_data)
+			drone.move(move_instr)
+
 		videoSvc.feedVideoData(frame)
-		drone.move(move_instr)
-		
 		log.info(drone.getData())
 
 if __name__ == "__main__":
@@ -48,8 +54,9 @@ if __name__ == "__main__":
 	ctrl = ControlerService()
 	drone = DroneService()
 	videoSvc = VideoService()
-	face_detect_ctrl = FaceDetectionService()
 	videoSvc.setup(devMode = devMode)
+	face_detect_ctrl = FaceDetectionService()
+	face_detect_ctrl.setup(devMode = devMode) # dev mode here for now jsut print
 	try:
 		drone.setup(devMode = devMode)
 		awaitStart(ctrl, drone)

@@ -44,4 +44,3 @@ if __name__ == "__main__":
 	while True:
 		axis, btns, smh = controler.getData()
 		print(axis)
-		os.system('clear')

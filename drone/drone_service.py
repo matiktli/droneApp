@@ -14,14 +14,17 @@ class DroneService():
 		self.speedVector = speedVector
 		self.drone.startup()
 		self.reset()
-		self.drone.useDemoMode(True)
+		self.drone.trim()                                       # Recalibrate sensors
+		self.drone.getSelfRotation(5)                           # Get auto-alteration of gyroscope-sensor
+		print "Auto-alt.:"+str(self.drone.selfRotation)+"dec/s" # Showing value for auto-alteration
+		#self.drone.useDemoMode(True)
 		self.drone.setSpeed(self.speedVector)
-		self.drone.getNDpackage(["demo"])      # mb here ??
+		#self.drone.getNDpackage(["demo"])      # mb here ??
 		self.drone.setConfigAllID()
 		if videoData:
 			self.drone.sdVideo()
 			self.drone.frontCam()
-			self.drone.videoFPS(60)
+			self.drone.videoFPS(30)
 			CDC = self.drone.ConfigDataCount
 			while CDC == self.drone.ConfigDataCount: time.sleep(0.001)
 			self.drone.startVideo()
@@ -59,22 +62,28 @@ class DroneService():
 		if data == None:
 			return None
 		proportionVector = self.speedVector
+
+		#
+		# changed from if to elif down there, verify if helped	
+		#
 		if 'forward' in data and data['forward'] > 0:
 			self.drone.moveForward(proportionVector * data['forward'])
-		if 'backward' in data and data['backward'] > 0:
+		elif 'backward' in data and data['backward'] > 0:
 			self.drone.moveBackward(proportionVector * data['backward'])
-		if 'left' in data and data['left'] > 0:
+		elif 'left' in data and data['left'] > 0:
 			self.drone.moveLeft(proportionVector * data['left'])
-		if 'right' in data and data['right'] > 0:
+		elif 'right' in data and data['right'] > 0:
 			self.drone.moveRight(proportionVector * data['right'])
-		if 'rotate_left' in data and data['rotate_left'] > 0:
+		elif 'rotate_left' in data and data['rotate_left'] > 0:
 			self.drone.turnLeft(proportionVector * data['rotate_left'])
-		if 'rotate_right' in data and data['rotate_right'] > 0:
+		elif 'rotate_right' in data and data['rotate_right'] > 0:
 			self.drone.turnRight(proportionVector * data['rotate_right'])
-		if 'up' in data and data['up'] > 0:
+		elif 'up' in data and data['up'] > 0:
 			self.drone.moveUp(proportionVector * data['up'])
-		if 'down' in data and data['down'] > 0:
+		elif 'down' in data and data['down'] > 0:
 			self.drone.moveDown(proportionVector * data['down'])
+		time.sleep(0.1) # this is question...
+
 		return data
 
 	def execute(self, btns_data):
@@ -103,7 +112,7 @@ class DroneService():
 			self.land()
 
 	def execute_faceDetectMode(self, btns_data):
-		# TODO
+		# TODO we need to implement it here rather than in main app.py
 		pass
 
 	def getData(self):
