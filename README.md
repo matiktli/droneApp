@@ -16,11 +16,10 @@
 
 ## MiniBlog:
 * First Flight (drone camera):
-https://drive.google.com/open?id=1Xnx6MuLpeq2uTtdcD3GVAhw26dg4ZrAO
+https://youtu.be/9-TKB-jhHuk
 * Face Detection with OpenCV (drone camera):
-https://drive.google.com/open?id=14OPnCdhcStThMARFUHbOH2JhX31RGktL
-* AI Mode Drone View:
-https://drive.google.com/open?id=1JaVPgFeoBSC6_UPRabXbANzbimktabYS
+https://youtu.be/b6aHsCXbwkg
+
 ---
 ###  Run:
 * Pre-requirements:
@@ -29,3 +28,13 @@ https://drive.google.com/open?id=1JaVPgFeoBSC6_UPRabXbANzbimktabYS
   * Lib: OpenCv
 * Run commands:
   * Normal run: `python app.py`
+  * Dev mode (engines, recording disabled): `python app.py dev`
+  
+### Key binding:
+* L_toggle -> left,right,forward,backward
+* R_toggle -> turn_left,turn_right,up,down
+* Triangle -> AI Mode
+* Square -> Switch camera
+* Circle -> Land
+* X -> TakeOff
+* Options -> shutdown
