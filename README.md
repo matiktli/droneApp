@@ -19,6 +19,8 @@
 https://youtu.be/9-TKB-jhHuk
 * Face Detection with OpenCV (drone camera):
 https://youtu.be/b6aHsCXbwkg
+* First flight controlled via Face Recognition AI (drone camera):
+https://youtu.be/b5_x-R-2N9c
 
 ---
 ###  Run:
